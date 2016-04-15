@@ -1,3 +1,7 @@
+# Temp files
+*~
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -9,6 +13,7 @@ __pycache__/
 .Python
 env/
 build/
+.build/
 develop-eggs/
 dist/
 downloads/
@@ -49,6 +54,7 @@ coverage.xml
 
 # Django stuff:
 *.log
+*.sqlite
 
 # Sphinx documentation
 docs/_build/

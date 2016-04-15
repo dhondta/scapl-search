@@ -39,5 +39,3 @@ def error_handler(self, uuid):
     result = self.app.AsyncResult(uuid)
     print('Task {0} raised exception: {1!r}\n{2!r}'.format(
         uuid, result.result, result.traceback))
-
-

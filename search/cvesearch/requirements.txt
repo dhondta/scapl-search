@@ -1,0 +1,15 @@
+PyMongo>=2.7
+whoosh
+redis
+python-dateutil
+flask
+flask-login<=0.2.11
+flask-pymongo
+tornado
+passlib
+xlrd
+lxml
+https://github.com/marianoguerra/feedformatter/archive/master.zip
+six>=1.9.0
+pymisp
+pytz

@@ -19,7 +19,7 @@ class DebugTask(Task):
     def after_return(self, *args, **kwargs):
         print('Task returned: {0!r}'.format(self.request))
 
-@task(base=DebugTask, name="GenericSearch")
+@task(base=DebugTask, name="generic")
 def generic(apl_keywords, item_api, item_keywords, item_ns, *args):
     logger.info("Search task...")
     keywords = ",".join([apl_keywords, item_keywords])

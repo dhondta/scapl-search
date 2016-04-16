@@ -23,6 +23,5 @@ def generic(apl_keywords, item_api, item_keywords, item_ns, *args):
         'output': out,
         'error': err,
     }
-    
     return result
 

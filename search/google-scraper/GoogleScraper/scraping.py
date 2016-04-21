@@ -303,7 +303,7 @@ class SearchEngineScrape(metaclass=abc.ABCMeta):
 
     def keyword_info(self):
         """Print a short summary where we are in the scrape and what's the next keyword."""
-        logger.info(
+        logger.debug(
             '[{thread_name}][{ip}]]Keyword: "{keyword}" with {num_pages} pages, slept {delay} seconds before '
             'scraping. {done}/{all} already scraped.'.format(
                 thread_name=self.name,
@@ -317,7 +317,7 @@ class SearchEngineScrape(metaclass=abc.ABCMeta):
 
     def instance_creation_info(self, scraper_name):
         """Debug message whenever a scraping worker is created"""
-        logger.info('[+] {}[{}][search-type:{}][{}] using search engine "{}". Num keywords={}, num pages for keyword={}'.format(
+        logger.debug('[+] {}[{}][search-type:{}][{}] using search engine "{}". Num keywords={}, num pages for keyword={}'.format(
             scraper_name, self.requested_by, self.search_type, self.base_search_url, self.search_engine_name,
             len(self.jobs),
             self.pages_per_keyword))

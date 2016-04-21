@@ -293,7 +293,10 @@ class CacheManager():
                 db_lock.acquire()
 
             if self.config.get('minimize_caching_files', True):
-                html = parser.cleaned_html
+                try:
+                    html = parser.cleaned_html
+                except AttributeError:  # silently fail when parser is None
+                    html = ''           # FIXME: find cause and solve the exception
             else:
                 html = parser.html
 
@@ -354,10 +357,10 @@ class CacheManager():
 
         duplicates = [v for k, v in mappings.items() if len(v) > 1]
         if duplicates:
-            logger.info('Not one-to-one. {}'.format(duplicates))
+            logger.debug('Not one-to-one. {}'.format(duplicates))
             return False
         else:
-            logger.info('one-to-one')
+            logger.debug('one-to-one')
             return True
 
 
@@ -414,8 +417,8 @@ class CacheManager():
                 num_cached += 1
                 scrape_jobs.remove(job)
 
-        logger.info('{} cache files found in {}'.format(len(files), self.config.get('cachedir')))
-        logger.info('{}/{} objects have been read from the cache. {} remain to get scraped.'.format(
+        logger.debug('{} cache files found in {}'.format(len(files), self.config.get('cachedir')))
+        logger.debug('{}/{} objects have been read from the cache. {} remain to get scraped.'.format(
             num_cached, num_total, num_total - num_cached))
 
         session.add(scraper_search)
@@ -470,7 +473,7 @@ class CacheManager():
                 data = cfile.read()
                 cleaned = lxml.html.tostring(cleaner.clean_html(lxml.html.fromstring(data)))
                 cfile.write(cleaned)
-                logger.info('Cleaned {}. Size before: {}, after {}'.format(file, len(data), len(cleaned)))
+                logger.debug('Cleaned {}. Size before: {}, after {}'.format(file, len(data), len(cleaned)))
 
 
     def fix_broken_cache_names(self, url, search_engine, scrapemode, page_number):

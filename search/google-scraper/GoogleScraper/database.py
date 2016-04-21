@@ -192,7 +192,7 @@ class Proxy(Base):
     ip = Column(String)
     hostname = Column(String)
     port = Column(Integer)
-    proto = Column(Enum('socks5', 'socks4', 'http'))
+    proto = Column(Enum('socks5', 'socks4', 'http', 'https'))
     username = Column(String)
     password = Column(String)
 

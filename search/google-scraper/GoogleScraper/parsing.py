@@ -1073,7 +1073,7 @@ if __name__ == '__main__':
 
     parser = parser(raw_html)
     parser.parse()
-    print(parser)
+    logger.debug(parser)
 
     with open('/tmp/testhtml.html', 'w') as of:
         of.write(raw_html)

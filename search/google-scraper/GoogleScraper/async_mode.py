@@ -51,7 +51,7 @@ class AsyncHttpScrape(object):
 
             self.requested_at = datetime.datetime.utcnow()
 
-            logger.info('[+] {} requested keyword \'{}\' on {}. Response status: {}'.format(
+            logger.debug('[+] {} requested keyword \'{}\' on {}. Response status: {}'.format(
                 self.requested_by,
                 self.query,
                 self.search_engine_name,

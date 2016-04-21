@@ -138,7 +138,7 @@ class ShowProgressQueue(threading.Thread):
 
             self.num_already_processed += 1
 
-            print(self.progress_fmt.format(self.num_already_processed, self.num_keywords), end='\r')
+            logger.debug(self.progress_fmt.format(self.num_already_processed, self.num_keywords), end='\r')
 
             # TODO: FIX THIS!
             # self.verbosity == 2 and self.num_already_processed % 5 == 0:
@@ -177,12 +177,12 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
     setup_logger(level=config.get('log_level').upper())
 
     if config.get('view_config', False):
-        print(open(os.path.join(get_base_path(), 'scrape_config.py')).read())
+        logger.debug(open(os.path.join(get_base_path(), 'scrape_config.py')).read())
         return
 
     if config.get('version'):
         from GoogleScraper.version import __version__
-        print(__version__)
+        logger.debug(__version__)
         return
 
     if config.get('clean', False):
@@ -230,27 +230,27 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
         namespace['SERP'] = SERP
         namespace['Link'] = Link
         namespace['Proxy'] = GoogleScraper.database.Proxy
-        print('Available objects:')
-        print('session - A sqlalchemy session of the results database')
-        print('ScraperSearch - Search/Scrape job instances')
-        print('SERP - A search engine results page')
-        print('Link - A single link belonging to a SERP')
-        print('Proxy - Proxies stored for scraping projects.')
+        logger.debug('Available objects:')
+        logger.debug('session - A sqlalchemy session of the results database')
+        logger.debug('ScraperSearch - Search/Scrape job instances')
+        logger.debug('SERP - A search engine results page')
+        logger.debug('Link - A single link belonging to a SERP')
+        logger.debug('Proxy - Proxies stored for scraping projects.')
         start_python_console(namespace)
         return
 
     if not (keyword or keywords) and not kwfile:
         # Just print the help.
         get_command_line(True)
-        print('No keywords to scrape for. Please provide either an keyword file (Option: --keyword-file) or specify and '
-            'keyword with --keyword.')
+        logger.debug('No keywords to scrape for. Please provide either an keyword file (Option: --keyword-file) or specify and '
+                     'keyword with --keyword.')
         return
 
     cache_manager = CacheManager(config)
 
     if config.get('fix_cache_names'):
         cache_manager.fix_broken_cache_names()
-        logger.info('renaming done. restart for normal use.')
+        logger.debug('renaming done. restart for normal use.')
         return
 
     keywords = [keyword, ] if keyword else keywords
@@ -304,21 +304,21 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
         raise WrongConfigurationError('Invalid search type! Select one of {}'.format(repr(valid_search_types)))
 
     if config.get('simulate', False):
-        print('*' * 60 + 'SIMULATION' + '*' * 60)
-        logger.info('If GoogleScraper would have been run without the --simulate flag, it would have:')
-        logger.info('Scraped for {} keywords, with {} results a page, in total {} pages for each keyword'.format(
+        logger.debug('*' * 60 + 'SIMULATION' + '*' * 60)
+        logger.debug('If GoogleScraper would have been run without the --simulate flag, it would have:')
+        logger.debug('Scraped for {} keywords, with {} results a page, in total {} pages for each keyword'.format(
             len(keywords), int(config.get('num_results_per_page', 0)),
             int(config.get('num_pages_for_keyword'))))
         if None in proxies:
-            logger.info('Also using own ip address to scrape.')
+            logger.debug('Also using own ip address to scrape.')
         else:
-            logger.info('Not scraping with own ip address.')
-        logger.info('Used {} unique ip addresses in total'.format(len(proxies)))
+            logger.debug('Not scraping with own ip address.')
+        logger.debug('Used {} unique ip addresses in total'.format(len(proxies)))
         if proxies:
-            logger.info('The following proxies are used: \n\t\t{}'.format(
+            logger.debug('The following proxies are used: \n\t\t{}'.format(
                 '\n\t\t'.join([proxy.host + ':' + proxy.port for proxy in proxies if proxy])))
 
-        logger.info('By using {} mode with {} worker instances'.format(config.get('scrape_method'),
+        logger.debug('By using {} mode with {} worker instances'.format(config.get('scrape_method'),
                                                                        int(config.get('num_workers'))))
         return
 
@@ -349,7 +349,7 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
             # if the last modification is older then the starting of the search
             if last_modified < last_search.started_searching:
                 scraper_search = last_search
-                logger.info('Continuing last scrape.')
+                logger.debug('Continuing last scrape.')
 
     if not scraper_search:
         scraper_search = ScraperSearch(
@@ -376,7 +376,7 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
         # A lock to prevent multiple threads from solving captcha, used in selenium instances.
         captcha_lock = threading.Lock()
 
-        logger.info('Going to scrape {num_keywords} keywords with {num_proxies} proxies by using {num_threads} threads.'.format(
+        logger.debug('Going to scrape {num_keywords} keywords with {num_proxies} proxies by using {num_threads} threads.'.format(
             num_keywords=len(list(scrape_jobs)),
             num_proxies=len(proxies),
             num_threads=num_search_engines))

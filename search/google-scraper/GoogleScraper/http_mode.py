@@ -13,6 +13,7 @@ from GoogleScraper.user_agents import random_user_agent
 import logging
 
 logger = logging.getLogger(__name__)
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -81,7 +82,7 @@ def get_GET_params_for_search_engine(query, search_engine, page_number=1, num_re
         if page_number > 1:
             search_params['p'] = str(page_number - 1)
 
-        # @todo: what was this for?
+        # @TODO: what was this for?
         # if search_type == 'image':
         #     base_search_url = 'http://yandex.ru/images/search?'
 
@@ -180,7 +181,8 @@ class HttpScrape(SearchEngineScrape, threading.Timer):
         pmapping = {
             'socks4': 1,
             'socks5': 2,
-            'http': 3
+            'http': 3,
+            'https': 4,
         }
         # Patch the socket module
         # rdns is by default on true. Never use rnds=False with TOR, otherwise you are screwed!
@@ -264,8 +266,15 @@ class HttpScrape(SearchEngineScrape, threading.Timer):
             super().detection_prevention_sleep()
             super().keyword_info()
 
-            request = self.requests.get(self.base_search_url + urlencode(self.search_params),
-                                        headers=self.headers, timeout=timeout)
+            # ---------------------------------------- ADDED SUPPORT FOR HTTPS PROXY ----------------------------------------
+            if self.proxy and self.proxy.proto == 'https':
+                request = self.requests.get(self.base_search_url + urlencode(self.search_params),
+                                            headers=self.headers, timeout=timeout,
+                                            proxies={'https': 'https://{}:{}'.format(self.proxy.host, self.proxy.port)})
+            else:
+            # ---------------------------------------------------------------------------------------------------------------
+                request = self.requests.get(self.base_search_url + urlencode(self.search_params),
+                                            headers=self.headers, timeout=timeout)
 
             self.requested_at = datetime.datetime.utcnow()
             self.html = request.text

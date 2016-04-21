@@ -6,6 +6,7 @@ import pymysql
 import re
 from GoogleScraper import database
 import logging
+import socket
 
 Proxy = namedtuple('Proxy', 'proto, host, port, username, password')
 logger = logging.getLogger(__name__)
@@ -42,6 +43,10 @@ def parse_proxy_file(fname):
                     try:
                         proto = tokens[0]
                         host, port = tokens[1].split(':')
+                        # ----- ADDED TO PERFORM AN IP ADDRESS LOOKUP IF 'host' IS A HOSTNAME -----
+                        if not re.match('^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$', host):
+                            host = socket.gethostbyname(host)
+                        # -------------------------------------------------------------------------
                     except:
                         raise Exception(
                             'Invalid proxy file. Should have the following format: {}'.format(parse_proxy_file.__doc__))
@@ -78,7 +83,7 @@ def get_proxies(host, user, password, database, port=3306, unix_socket=None):
         cur = conn.cursor(pymysql.cursors.DictCursor)
         # Adapt this code for you to make it retrieving the proxies in the right format.
         cur.execute('SELECT host, port, username, password, protocol FROM proxies')
-        proxies = [Proxy(proto=s['protocol'], host=s['host'], port=s['port'],
+        proxies = [Proxy(proto=s['protocol'], host=s['host'], porhttpst=s['port'],
                          username=s['username'], password=s['password']) for s in cur.fetchall()]
 
         return proxies

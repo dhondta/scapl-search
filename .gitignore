@@ -61,3 +61,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Plugin related data (cache, ...)
+search/google-scraper/.scrapecache
+search/google-scraper/google_scraper.db

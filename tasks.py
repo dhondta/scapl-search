@@ -27,6 +27,6 @@ def generic(self, cmd):
         options.append('-' + 'v' * GENERIC_TASK_LOG_LEVEL)
     cmd = shlex.split(cmd)
     cmd.extend(options)
-    p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=False)
+    p = Popen(cmd, stdout=PIPE, stderr=PIPE)
     out, err = p.communicate()
     return {'output': out, 'error': err}

@@ -152,7 +152,7 @@ class Parser():
 
         self.num_results_for_query = self.first_match(num_results_selector, self.dom)
         if not self.num_results_for_query:
-            logger.debug('{}: Cannot parse num_results from serp page with selectors {}'.format(self.__class__.__name__,
+            logger.error('{}: Cannot parse num_results from serp page with selectors {}'.format(self.__class__.__name__,
                                                                                        num_results_selector))
 
         # get the current page we are at. Sometimes we search engines don't show this.
@@ -164,7 +164,7 @@ class Parser():
         # let's see if the search query was shitty (no results for that query)
         self.effective_query = self.first_match(self.effective_query_selector, self.dom)
         if self.effective_query:
-            logger.debug('{}: There was no search hit for the search query. Search engine used {} instead.'.format(
+            logger.warning('{}: There was no search hit for the search query. Search engine used {} instead.'.format(
                 self.__class__.__name__, self.effective_query))
         else:
             self.effective_query = ''
@@ -474,7 +474,7 @@ class YandexParser(Parser):
 
     effective_query_selector = ['.misspell__message .misspell__link']
 
-    # @TODO: In december 2015, I saw that yandex only shows the number of search results in the search input field
+    # TODO: In december 2015, I saw that yandex only shows the number of search results in the search input field
     # with javascript. One can scrape it in plain http mode, but the values are hidden in some javascript and not
     # accessible with normal xpath/css selectors. A normal text search is done.
     num_results_search_selectors = ['.serp-adv .serp-item__wrap > strong', '.input__found_visibility_visible font font::text']

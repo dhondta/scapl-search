@@ -15,7 +15,7 @@ So we need to adjust the loglevel to the value set in
 the configuration for each submodule.
 """
 
-def setup_logger(level=logging.INFO):
+def setup_logger(level=logging.DEBUG):
     """
     Configure global log settings for GoogleScraper
     """

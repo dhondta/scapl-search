@@ -23,6 +23,10 @@ headers = {
 }
 
 
+class NetworkError(Exception):
+    pass
+
+
 def get_GET_params_for_search_engine(query, search_engine, page_number=1, num_results_per_page=10,
                                      search_type='normal'):
     """Returns the params of the url for the search engine and the search mode.
@@ -82,7 +86,7 @@ def get_GET_params_for_search_engine(query, search_engine, page_number=1, num_re
         if page_number > 1:
             search_params['p'] = str(page_number - 1)
 
-        # @TODO: what was this for?
+        # TODO: what was this for?
         # if search_type == 'image':
         #     base_search_url = 'http://yandex.ru/images/search?'
 
@@ -266,13 +270,11 @@ class HttpScrape(SearchEngineScrape, threading.Timer):
             super().detection_prevention_sleep()
             super().keyword_info()
 
-            # ---------------------------------------- ADDED SUPPORT FOR HTTPS PROXY ----------------------------------------
-            if self.proxy and self.proxy.proto == 'https':
+            if self.proxy is not None:
                 request = self.requests.get(self.base_search_url + urlencode(self.search_params),
-                                            headers=self.headers, timeout=timeout,
-                                            proxies={'https': 'https://{}:{}'.format(self.proxy.host, self.proxy.port)})
+                    headers=self.headers, timeout=timeout,
+                    proxies={self.proxy.proto: '{}://{}:{}'.format(self.proxy.proto, self.proxy.host, self.proxy.port)})
             else:
-            # ---------------------------------------------------------------------------------------------------------------
                 request = self.requests.get(self.base_search_url + urlencode(self.search_params),
                                             headers=self.headers, timeout=timeout)
 
@@ -286,14 +288,20 @@ class HttpScrape(SearchEngineScrape, threading.Timer):
 
         except self.requests.ConnectionError as ce:
             self.status = 'Network problem occurred {}'.format(ce)
+            logger.error(self.Status)
             success = False
+            exit(1)
         except self.requests.Timeout as te:
             self.status = 'Connection timeout {}'.format(te)
+            logger.error(self.Status)
             success = False
+            exit(1)
         except self.requests.exceptions.RequestException as e:
             # In case of any http networking exception that wasn't caught
             # in the actual request, just end the worker.
             self.status = 'Stopping scraping because {}'.format(e)
+            logger.error(self.Status)
+            exit(1)
         else:
             if not request.ok:
                 self.handle_request_denied(request.status_code)

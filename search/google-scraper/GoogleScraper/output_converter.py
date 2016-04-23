@@ -107,6 +107,7 @@ def store_serp_result(serp, config):
 
     if outfile:
         data = row2dict(serp)
+
         data['results'] = []
         for link in serp.links:
             data['results'].append(row2dict(link))

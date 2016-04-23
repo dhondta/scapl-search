@@ -512,7 +512,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
         try:
             WebDriverWait(self.webdriver, 5).until(EC.title_contains(self.query))
         except TimeoutException:
-            logger.debug(SeleniumSearchError(
+            logger.error(SeleniumSearchError(
                 '{}: Keyword "{}" not found in title: {}'.format(self.name, self.query, self.webdriver.title)))
 
     def search(self):
@@ -567,7 +567,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
 
                 self.requested_at = datetime.datetime.utcnow()
             else:
-                logger.debug('{}: Cannot get handle to the input form for keyword {}.'.format(self.name, self.query))
+                logger.warning('{}: Cannot get handle to the input form for keyword {}.'.format(self.name, self.query))
                 continue
 
             super().detection_prevention_sleep()
@@ -624,7 +624,7 @@ class SelScrape(SearchEngineScrape, threading.Thread):
             self.webdriver.set_window_size(400, 400)
             self.webdriver.set_window_position(400 * (self.browser_num % 4), 400 * (math.floor(self.browser_num // 4)))
         except WebDriverException as e:
-            logger.debug('Cannot set window size: {}'.format(e))
+            logger.error('Cannot set window size: {}'.format(e))
 
         super().before_search()
 

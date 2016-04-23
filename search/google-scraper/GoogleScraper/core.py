@@ -138,11 +138,9 @@ class ShowProgressQueue(threading.Thread):
 
             self.num_already_processed += 1
 
-            logger.debug(self.progress_fmt.format(self.num_already_processed, self.num_keywords), end='\r')
+            if self.num_already_processed % 5 == 0:
+                logger.debug(self.progress_fmt.format(self.num_already_processed, self.num_keywords))
 
-            # TODO: FIX THIS!
-            # self.verbosity == 2 and self.num_already_processed % 5 == 0:
-            # print(self.progress_fmt.format(self.num_already_processed, self.num_keywords))
             self.queue.task_done()
 
 
@@ -242,7 +240,7 @@ def main(return_results=False, parse_cmd_line=True, config_from_dict=None):
     if not (keyword or keywords) and not kwfile:
         # Just print the help.
         get_command_line(True)
-        logger.debug('No keywords to scrape for. Please provide either an keyword file (Option: --keyword-file) or specify and '
+        logger.warning('No keywords to scrape for. Please provide either an keyword file (Option: --keyword-file) or specify and '
                      'keyword with --keyword.')
         return
 

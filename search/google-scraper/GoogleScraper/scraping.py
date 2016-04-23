@@ -359,7 +359,7 @@ class SearchEngineScrape(metaclass=abc.ABCMeta):
         self.search_number += 1
 
         if not self.store():
-            logger.debug('No results to store for keyword: "{}" in search engine: {}'.format(self.query,
+            logger.warning('No results to store for keyword: "{}" in search engine: {}'.format(self.query,
                                                                                     self.search_engine_name))
 
         if self.progress_queue:

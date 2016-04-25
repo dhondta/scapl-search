@@ -68,4 +68,7 @@ proxy_settings
 # Plugin related data (cache, ...)
 search/google-scraper/.scrapecache
 search/google-scraper/google_scraper.db
+search/cve-search/web/
+search/cve-search/tmp/
+search/cve-search/indexdir/
 *.help
